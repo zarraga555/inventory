@@ -105,5 +105,7 @@
     "User type" : "Tipo de usuario",
     "Select an option" : "Seleccione una opción",
     "Full Name" : "Nombre completo",
-    "Edit" : "Editar"
+    "Edit" : "Editar",
+    "Edit user" : "Editar usuario",
+    "Save changes" : "Guardar cambios"
 }
