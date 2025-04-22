@@ -128,5 +128,15 @@
         {{ $slot }}
 
         @fluxScripts
+        <x-flux::toast />
+        @if (session()->has('toast'))
+            <script>
+                window.addEventListener('DOMContentLoaded', () => {
+                    window.dispatchEvent(new CustomEvent('show-toast', {
+                        detail: @json(session('toast'))
+                    }));
+                });
+            </script>
+        @endif
     </body>
 </html>
