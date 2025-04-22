@@ -65,7 +65,7 @@ class Create extends Component
             session()->flash('toast', [
                 'type' => 'success',
                 'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('The user was successfully registered.'),
+                'message' => __('Role successfully created.'),
             ]);
             return redirect()->route('user-management.roles.index');
         } catch (\Exception $e) {
@@ -84,7 +84,7 @@ class Create extends Component
             $this->dispatch('show-toast', [
                 'type' => 'success',
                 'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('The user was successfully registered.'),
+                'message' => __('Role successfully created.'),
             ]);
             $this->resetInputFields();
         } catch (\Exception $e) {
