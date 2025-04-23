@@ -24,6 +24,12 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('users/create','user-management.users.create')->name('user-management.users.create');
         Volt::route('users/{user}/edit','user-management.users.edit')->name('user-management.users.edit');
     });
+
+    Route::prefix('user-management')->group(function () {
+        Volt::route('roles','user-management.roles.index')->name('user-management.roles.index');
+        Volt::route('roles/create','user-management.roles.create')->name('user-management.roles.create');
+        Volt::route('roles/{role}/edit','user-management.roles.edit')->name('user-management.roles.edit');
+    });
 });
 
 require __DIR__.'/auth.php';
