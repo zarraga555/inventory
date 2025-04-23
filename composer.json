@@ -33,7 +33,9 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/log_activity.php"
+            "app/Helpers/log_activity.php",
+            "app/Helpers/ToastHelper.php",
+            "app/Traits/InteractsWithToasts.php"
         ]
     },
     "autoload-dev": {
