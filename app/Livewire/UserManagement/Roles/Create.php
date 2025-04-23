@@ -4,11 +4,15 @@ namespace App\Livewire\UserManagement\Roles;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use App\Helpers\ToastHelper;
 use Illuminate\Support\Facades\Log;
+use App\Traits\InteractsWithToasts;
 use Spatie\Permission\Models\Permission;
 
 class Create extends Component
 {
+    use InteractsWithToasts;
+
     public string $name; // Nombre del rol
     public $selectedPermissions = []; // Permisos seleccionados
 
@@ -49,11 +53,7 @@ class Create extends Component
             DB::rollback();
             // Registrar el error para depuración
             Log::error('Error al crear rol: ' . $e->getMessage());
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'title' => __('Error'), // ← este debe estar presente
-                'message' => __('An error occurred while saving.'). $e->getMessage(),
-            ]);
+            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
@@ -61,19 +61,10 @@ class Create extends Component
     {
         try {
             $this->createItem();
-            // 👇 Esto guarda el toast en la sesión antes de redirigir
-            session()->flash('toast', [
-                'type' => 'success',
-                'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('Role successfully created.'),
-            ]);
+            ToastHelper::flashSuccess('Role successfully created.', 'Saved');
             return redirect()->route('user-management.roles.index');
         } catch (\Exception $e) {
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'title' => __('Error'), // ← este debe estar presente
-                'message' => __('An error occurred while saving.'). $e->getMessage(),
-            ]);
+            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
@@ -81,18 +72,10 @@ class Create extends Component
     {
         try {
             $this->createItem();
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('Role successfully created.'),
-            ]);
+            $this->showToastSuccess('Role successfully created.', 'Saved');
             $this->resetInputFields();
         } catch (\Exception $e) {
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'title' => __('Error'), // ← este debe estar presente
-                'message' => __('An error occurred while saving.'). $e->getMessage(),
-            ]);
+            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
