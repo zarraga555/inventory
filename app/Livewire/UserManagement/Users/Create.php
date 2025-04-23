@@ -4,12 +4,17 @@ namespace App\Livewire\UserManagement\Users;
 
 use App\Models\User;
 use Livewire\Component;
+use App\Helpers\ToastHelper;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use App\Traits\InteractsWithToasts;
 use Illuminate\Support\Facades\Hash;
+
 
 class Create extends Component
 {
+    use InteractsWithToasts;
+
     public string $name;
     public string $email;
     public string $password;
@@ -40,20 +45,11 @@ class Create extends Component
             $this->createItem();
             DB::commit();
             $this->resetInputFields();
-            // Guardar el mensaje en la sesión
-            session()->flash('toast', [
-                'type' => 'success',
-                'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('The user was successfully registered.'),
-            ]);
+            ToastHelper::flashSuccess('The user was successfully registered.', 'Saved');
             return redirect()->route('user-management.users.index');
         } catch (\Exception $e) {
             DB::rollback();
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'title' => __('Error'), // ← este debe estar presente
-                'message' => __('An error occurred while saving.'). $e->getMessage(),
-            ]);
+            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
@@ -65,20 +61,10 @@ class Create extends Component
             $this->createItem();
             DB::commit();
             $this->resetInputFields();
-
-            // Emitir evento para mostrar toast
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'title' => __('Saved'), // ← este debe estar presente
-                'message' => __('The user was successfully registered.'),
-            ]);
+            $this->showToastSuccess('The user was successfully registered.', 'Saved');
         } catch (\Exception $e) {
             DB::rollback();
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'title' => __('Error'), // ← este debe estar presente
-                'message' => __('An error occurred while saving.'). $e->getMessage(),
-            ]);
+            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
