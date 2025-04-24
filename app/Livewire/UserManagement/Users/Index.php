@@ -23,7 +23,7 @@ class Index extends Component
         ->where('name', 'like', "%{$this->search}%")
         ->orWhere('email', 'like', "%{$this->search}%")
         ->orderBy('created_at', 'desc')
-        ->paginate(10);
+        ->paginate(25);
 
         return view('livewire.user-management.users.index', compact('users'));
     }
