@@ -2,6 +2,7 @@
 
 namespace App\Livewire\UserManagement\Users;
 
+use App\Helpers\ToastHelper;
 use App\Models\User;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -15,11 +16,6 @@ class Edit extends Component
     public $user_id;
     public $nameLabel;
 
-    public function render()
-    {
-        return view('livewire.user-management.users.edit');
-    }
-
     public function mount($user)
     {
         $user = User::findOrFail($user);
@@ -30,6 +26,11 @@ class Edit extends Component
         $this->user_id = $user->id;
         $this->name = $user->name;
         $this->email = $user->email;
+    }
+
+    public function render()
+    {
+        return view('livewire.user-management.users.edit');
     }
 
     private function validateForm()
@@ -51,23 +52,33 @@ class Edit extends Component
      */
     public function update()
     {
-        $this->validateForm();
+        try {
+            $this->validateForm();
 
+            $this->updateItem();
+
+            ToastHelper::flashSuccess('The user has been updated successfully.', 'Success');
+            return redirect()->route('user-management.users.index');
+        } catch (\Throwable $e) {
+            // Puedes guardar el error en logs también si deseas
+            report($e);
+            ToastHelper::flashError('An error occurred while updating the user. Please try again. ' . $e->getMessage());
+        }
+    }
+
+    private function updateItem()
+    {
         $user = User::findOrFail($this->user_id);
-        $user->update([
-            'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make($this->password)
-        ]);
-        //$user->roles()->sync($this->role_id);
+        $user->name = $this->name;
+        $user->email = $this->email;
 
-        session()->flash('toast', [
-            'type' => 'success',
-            'title' => __('Success'), // ← este debe estar presente
-            'message' => __('The user has been updated successfully.'),
-        ]);
+        if (!empty($this->password)) {
+            $user->password = Hash::make($this->password);
+        }
 
-        return redirect()->route('user-management.users.index');
+        $user->save();
+
+        $user->roles()->sync([$this->user_type]); // <-- Verifica que este campo esté correctamente mapeado
     }
 
     /**
@@ -79,11 +90,8 @@ class Edit extends Component
 
         $this->closeDelete();
 
-        session()->flash('toast', [
-            'type' => 'success',
-            'title' => __('Success'), // ← este debe estar presente
-            'message' => __('User has been successfully deleted.'),
-        ]);
+        ToastHelper::flashSuccess('User has been successfully deleted.', 'Success');
+
         return redirect()->route('user-management.users.index');
     }
 }
