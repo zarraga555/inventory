@@ -4,32 +4,37 @@ namespace App\Livewire\UserManagement\Users;
 
 use App\Helpers\ToastHelper;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
+use App\Traits\InteractsWithToasts;
 use Illuminate\Support\Facades\Hash;
 
 class Edit extends Component
 {
-    public $name, $email, $password, $password_confirmation, $roles, $user_type;
+    use InteractsWithToasts;
+
+    public $name, $email, $password, $password_confirmation, $availableRoles, $selectedRoleId;
     public $confirmingUserDeletion = false;
-    public $user_id;
-    public $nameLabel;
+    public $userId;
+    public User $user;
 
-    public function mount($user)
+    public function mount(User $user)
     {
-        $user = User::findOrFail($user);
-
-        $this->roles = Role::all();
-        $this->user_type = isset($user->roles->pluck('id')[0]) ? $user->roles->pluck('id')[0] : 0;
-        $this->nameLabel = $user->name;
-        $this->user_id = $user->id;
+        $this->user = $user->load('roles');
+        $this->authorize('update', $this->user);
+        $this->userId = $user->id;
+        $this->availableRoles = Role::all();
+        $this->selectedRoleId = $user->roles->pluck('id')->first() ?? 0;
         $this->name = $user->name;
         $this->email = $user->email;
     }
 
+
     public function render()
     {
+        // $this->authorize('view', $this->user);
         return view('livewire.user-management.users.edit');
     }
 
@@ -41,9 +46,10 @@ class Edit extends Component
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($this->user_id) // Ignora el email del usuario actual
+                Rule::unique('users', 'email')->ignore($this->userId) // Ignora el email del usuario actual
             ],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'], // Permite que la contraseña sea opcional en la actualización
+            'selectedRoleId' => ['required', Rule::exists('roles', 'id')],
         ]);
     }
 
@@ -52,9 +58,10 @@ class Edit extends Component
      */
     public function update()
     {
+        $this->authorize('update', $this->user);
+
         try {
             $this->validateForm();
-
             $this->updateItem();
 
             ToastHelper::flashSuccess('The user has been updated successfully.', 'Success');
@@ -68,7 +75,16 @@ class Edit extends Component
 
     private function updateItem()
     {
-        $user = User::findOrFail($this->user_id);
+        $role = Role::find($this->selectedRoleId);
+        if (!$role) {
+            ToastHelper::flashError('The selected role is invalid. Please choose a valid role.');
+            return;
+        }
+
+        $user = User::findOrFail($this->userId);
+
+        $original = $user->getOriginal(); // Capturamos los valores originales antes del update
+
         $user->name = $this->name;
         $user->email = $this->email;
 
@@ -78,7 +94,18 @@ class Edit extends Component
 
         $user->save();
 
-        $user->roles()->sync([$this->user_type]); // <-- Verifica que este campo esté correctamente mapeado
+        $user->roles()->sync([$role->id]);
+
+        logActivity(
+            'update',
+            $user,
+            [
+                'before' => collect($original)->only(['name', 'email']),
+                'after' => collect($user->getChanges())->only(['name', 'email']),
+                'performed_by' => Auth::user()->only(['id', 'name', 'email']),
+            ],
+            'User information was updated.'
+        );
     }
 
     /**
@@ -86,12 +113,37 @@ class Edit extends Component
      */
     public function delete()
     {
-        User::findOrFail($this->user_id)->delete();
+        $this->authorize('delete', $this->user);
 
-        $this->closeDelete();
+        // Evita que un usuario elimine su propia cuenta mientras está logueado
+        if (Auth::id() === $this->user->id) {
+            $this->confirmingUserDeletion = false; // Cierra el modal de confirmación de borrado
+            $this->showToastError('You cannot delete your own account while logged in.');
+            return;
+        }
 
-        ToastHelper::flashSuccess('User has been successfully deleted.', 'Success');
+        try {
+            $user = User::findOrFail($this->userId);
+            $userData = $user->toArray(); // Guardamos la data antes de eliminar
 
-        return redirect()->route('user-management.users.index');
+            $user->delete();
+
+            logActivity(
+                'delete',
+                $user,
+                [
+                    'deleted_user' => $userData,
+                    'performed_by' => Auth::user()->only(['id', 'name', 'email']),
+                ],
+                'User was deleted.'
+            );
+
+            ToastHelper::flashSuccess('User has been successfully deleted.', 'Success');
+
+            return redirect()->route('user-management.users.index');
+        } catch (\Throwable $e) {
+            report($e);
+            ToastHelper::flashError('An error occurred while deleting the user. ' . $e->getMessage());
+        }
     }
 }
