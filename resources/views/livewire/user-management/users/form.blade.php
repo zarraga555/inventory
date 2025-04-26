@@ -25,10 +25,12 @@
 
     <flux:field>
         <flux:label>{{ __('User type') }}</flux:label>
-        <flux:select wire:model="user_type">
+        <flux:select wire:model="selectedRoleId">
             <flux:select.option value="" selected>{{ __('Select an option') }}</flux:select.option>
-            <!-- Agrega tus opciones aquí -->
+            @foreach ($availableRoles as $availableRole)
+                <flux:select.option value="{{ $availableRole->id }}" selected>{{ __($availableRole->name) }}</flux:select.option>
+            @endforeach
         </flux:select>
-        <flux:error name="user_type" />
+        <flux:error name="selectedRoleId" />
     </flux:field>
 </div>
