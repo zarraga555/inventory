@@ -20,7 +20,7 @@ class UserManagementSeeder extends Seeder
         foreach ($modules as $module => $permissions) {
             foreach ($permissions as $permission) {
                 \Spatie\Permission\Models\Permission::updateOrCreate([
-                    'name' => "{$permission}  {$module}",
+                    'name' => "{$permission} {$module}",
                 ]);
             }
         }
