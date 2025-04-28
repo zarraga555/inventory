@@ -19,13 +19,13 @@ class Create extends Component
     public string $email;
     public string $password;
     public string $password_confirmation;
-    public $user_type, $roles;
+    public $selectedRoleId, $availableRoles;
 
     public array $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:users',
         'password' => 'required|string|min:8|confirmed',
-        'user_type' => 'required|integer|in:1,2',
+        'selectedRoleId' => 'required|integer|in:1,2',
     ];
 
     private function resetInputFields(): void
@@ -34,7 +34,7 @@ class Create extends Component
         $this->email = '';
         $this->password = '';
         $this->password_confirmation = '';
-        $this->user_type = '';
+        $this->selectedRoleId = '';
     }
 
     public function save()
@@ -75,12 +75,21 @@ class Create extends Component
             'email' => $this->email,
             'password' => Hash::make($this->password)
         ]);
-        $user->assignRole($this->user_type);
+        $user->roles()->sync($this->selectedRoleId);
+        logActivity(
+            'create',
+            $user,
+            [
+                'created_user' => $user->only(['id', 'name', 'email']),
+                'performed_by' => auth()->user()->only(['id', 'name', 'email']),
+            ],
+            'User was created.'
+        );
     }
 
     public function render()
     {
-        $this->roles = Role::all();
+        $this->availableRoles = Role::all();
         return view('livewire.user-management.users.create');
     }
 }
