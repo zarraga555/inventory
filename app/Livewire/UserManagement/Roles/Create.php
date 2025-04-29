@@ -2,24 +2,25 @@
 
 namespace App\Livewire\UserManagement\Roles;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
-use App\Helpers\ToastHelper;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Traits\InteractsWithToasts;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Traits\InteractsWithToasts;
+use App\Helpers\ToastHelper;
 
 class Create extends Component
 {
     use InteractsWithToasts;
 
-    public string $name; // Nombre del rol
-    public $selectedPermissions = []; // Permisos seleccionados
+    public string $name = '';
+    public array $selectedPermissions = [];
 
-    protected $rules = [
-        'name' => 'required|string|max:255|unique:roles,name', // Validación para el nombre del rol
-        'selectedPermissions' => 'nullable|array', // Asegurar que selectedPermissions sea un arreglo
-        'selectedPermissions.*' => 'exists:permissions,id', // Asegurarse de que cada permiso existe en la tabla 'permissions'
+    protected array $rules = [
+        'name' => 'required|string|max:255|unique:roles,name',
+        'selectedPermissions' => 'nullable|array',
+        'selectedPermissions.*' => 'exists:permissions,id',
     ];
 
     private function resetInputFields(): void
@@ -28,73 +29,76 @@ class Create extends Component
         $this->selectedPermissions = [];
     }
 
-    private function createItem()
+    private function createRole(bool $redirectAfterSave = true): void
     {
         $this->validate();
+
         DB::beginTransaction();
         try {
             // Crear el rol
-            $role = \Spatie\Permission\Models\Role::create(['name' => $this->name, 'guard_name' => 'web']);
+            $role = Role::create([
+                'name' => $this->name,
+                'guard_name' => 'web',
+            ]);
 
-            // Asignar los permisos seleccionados al rol
-            if (count($this->selectedPermissions)) {
+            // Asignar permisos
+            if (!empty($this->selectedPermissions)) {
                 $role->permissions()->sync($this->selectedPermissions);
             }
 
-            // Confirmar la transacción
+            // Registrar en logs (opcional, si usás ActivityLogHelper o logActivity)
+            logActivity(
+                'create',
+                $role,
+                [
+                    'created_role' => $role->only(['id', 'name']),
+                    'permissions_assigned' => $this->selectedPermissions,
+                    'performed_by' => auth()->user()->only(['id', 'name', 'email']),
+                ],
+                'Role was created.'
+            );
+
             DB::commit();
 
-            // Limpiar el formulario
-            $this->reset();
-
-            return $role;
-        } catch (\Exception $e) {
-            // En caso de error, revertir la transacción
-            DB::rollback();
-            // Registrar el error para depuración
-            Log::error('Error al crear rol: ' . $e->getMessage());
-            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
-        }
-    }
-
-    public function save()
-    {
-        try {
-            $this->createItem();
-            ToastHelper::flashSuccess('Role successfully created.', 'Saved');
-            return redirect()->route('user-management.roles.index');
-        } catch (\Exception $e) {
-            $this->showToastError('An error occurred while saving. ' . $e->getMessage());
-        }
-    }
-
-    public function saveAndCreateAnother()
-    {
-        try {
-            $this->createItem();
-            $this->showToastSuccess('Role successfully created.', 'Saved');
             $this->resetInputFields();
+
+            if ($redirectAfterSave) {
+                ToastHelper::flashSuccess('Role successfully created.', 'Saved');
+                redirect()->route('user-management.roles.index');
+            } else {
+                $this->showToastSuccess('Role successfully created.', 'Saved');
+            }
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error creating role: ' . $e->getMessage());
             $this->showToastError('An error occurred while saving. ' . $e->getMessage());
         }
     }
 
+    public function save(): void
+    {
+        $this->authorize('create', Role::class);
+        $this->createRole(true);
+    }
+    
+    public function saveAndCreateAnother(): void
+    {
+        $this->authorize('create', Role::class);
+        $this->createRole(false);
+    }
+    
     public function render()
     {
-        // Obtener todos los permisos
+        $this->authorize('create', Role::class);
+    
         $permissions = Permission::all();
-
-        // Agrupar los permisos por módulo
+    
         $modules = $permissions->groupBy(function ($permission) {
-            // Extraer el nombre del módulo (por ejemplo, "Usuarios" de "crear usuarios")
             $parts = explode(' ', $permission->name);
-
-            // Extraer todo después de la primera palabra (el verbo)
-            array_shift($parts); // Eliminar el verbo (la primera palabra)
-
-            // Usar el resto de las palabras como el nombre del módulo
-            return ucfirst(implode(' ', $parts));  // Unir el resto y capitalizar
+            array_shift($parts);
+            return ucfirst(implode(' ', $parts));
         });
+    
         return view('livewire.user-management.roles.create', compact('modules'));
     }
 }
