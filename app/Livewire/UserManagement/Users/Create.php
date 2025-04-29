@@ -97,7 +97,7 @@ class Create extends Component
      */
     public function save()
     {
-        $this->authorize('create', $this->user);
+        $this->authorize('create', User::class);
         $this->saveUser(true);
     }
 
@@ -106,7 +106,7 @@ class Create extends Component
      */
     public function saveAndCreateAnother()
     {
-        $this->authorize('create', $this->user);
+        $this->authorize('create', User::class);
         $this->saveUser(false);
     }
 
@@ -115,7 +115,8 @@ class Create extends Component
      */
     public function render()
     {
-        $this->authorize('view', $this->user);
+        $this->authorize('create', User::class);
+
         $this->availableRoles = Role::all();
         return view('livewire.user-management.users.create');
     }
