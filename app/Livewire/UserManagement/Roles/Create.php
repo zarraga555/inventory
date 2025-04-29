@@ -90,7 +90,6 @@ class Create extends Component
     public function render()
     {
         $this->authorize('create', Role::class);
-    
         $permissions = Permission::all();
     
         $modules = $permissions->groupBy(function ($permission) {
