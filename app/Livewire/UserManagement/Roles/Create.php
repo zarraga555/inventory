@@ -29,7 +29,7 @@ class Create extends Component
         $this->selectedPermissions = [];
     }
 
-    private function createRole(bool $redirectAfterSave = true): void
+    private function createRole(bool $redirectAfterSave = true)
     {
         $this->validate();
 
@@ -64,7 +64,7 @@ class Create extends Component
 
             if ($redirectAfterSave) {
                 ToastHelper::flashSuccess('Role successfully created.', 'Saved');
-                redirect()->route('user-management.roles.index');
+                return redirect()->route('user-management.roles.index');
             } else {
                 $this->showToastSuccess('Role successfully created.', 'Saved');
             }
