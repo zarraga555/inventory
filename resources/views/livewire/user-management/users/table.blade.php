@@ -1,11 +1,8 @@
-<x-flux.table.search 
-    model="search" 
-    placeholder="Search for users..." 
-/>
+<x-flux.table.search model="search" placeholder="Search for users..." />
 <x-flux.table>
     <x-flux.table.columns>
-        <x-flux.table.column>{{ __('Name') }}</x-flux.table.column>
-        <x-flux.table.column>{{ __('Email') }}</x-flux.table.column>
+        <x-flux.table.sortable-column field="name" label="Name" :sortField="$sortField" :sortDirection="$sortDirection" />
+        <x-flux.table.sortable-column field="email" label="Email" :sortField="$sortField" :sortDirection="$sortDirection" />
         <x-flux.table.column>{{ __('Role') }}</x-flux.table.column>
         @if (auth()->user()?->can('users.logs.view') || auth()->user()?->can('users.update'))
             <x-flux.table.column>{{ __('Actions') }}</x-flux.table.column>
