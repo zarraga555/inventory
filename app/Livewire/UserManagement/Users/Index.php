@@ -10,21 +10,31 @@ class Index extends Component
 {
     use WithPagination;
 
-    public string $search = '';
+    public $sortField = 'created_at';
+    public $sortDirection = 'desc';
 
-    public function updatingSearch()
+    public function sortBy($field)
     {
-        $this->resetPage();
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortDirection = 'asc';
+        }
+
+        $this->sortField = $field;
+    }
+
+    public function getQueryProperty()
+    {
+        return User::query()
+            ->orderBy($this->sortField, $this->sortDirection);
     }
 
     public function render()
     {
-        $users = User::query()
-        ->where('name', 'like', "%{$this->search}%")
-        ->orWhere('email', 'like', "%{$this->search}%")
-        ->orderBy('created_at', 'desc')
-        ->paginate(25);
-
-        return view('livewire.user-management.users.index', compact('users'));
+        $this->authorize('viewAny', User::class);
+        return view('livewire.user-management.users.index', [
+            'users' => $this->query->paginate(25),
+        ]);
     }
 }
