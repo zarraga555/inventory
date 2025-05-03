@@ -8,9 +8,11 @@
                 <flux:heading size="xl" level="1">{{ __('Users') }}</flux::heading>
                     <flux:subheading size="lg">{{ __('Manage your users') }}</flux::subheading>
             </div>
-            <flux:button href="{{ route('user-management.users.create') }}" variant="primary" wire:navigate>
-                {{ __('Create new user') }}
-            </flux:button>
+            @can('users.create')
+                <flux:button href="{{ route('user-management.users.create') }}" variant="primary" wire:navigate>
+                    {{ __('Create new user') }}
+                </flux:button>
+            @endcan
         </div>
     </div>
     <flux:separator variant="subtitle" />
