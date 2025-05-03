@@ -2,6 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\VoltServiceProvider::class,
     App\Providers\AuthServiceProvider::class,
+    App\Providers\ViewServiceProvider::class,
+    App\Providers\VoltServiceProvider::class,
 ];
