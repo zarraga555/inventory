@@ -24,7 +24,7 @@
                                 class="text-blue-500 hover:underline">{{ __('Edit') }}</a>
                         @endcan
                         @can('users.logs.view')
-                            | <a href="{{ route('user-management.users.edit', $user->id) }}"
+                            | <a href="{{ route('user-management.users.logs.view', $user->id) }}"
                                 class="text-primary-500 hover:underline">{{ __('See activity') }}</a>
                         @endcan
                     </td>
