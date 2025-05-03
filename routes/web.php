@@ -20,9 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
     Route::prefix('user-management')->group(function () {
-        Volt::route('users','user-management.users.index')->name('user-management.users.index');
-        Volt::route('users/create','user-management.users.create')->name('user-management.users.create');
-        Volt::route('users/{user}/edit','user-management.users.edit')->name('user-management.users.edit');
+        Volt::route('users','user-management.users.index')->name('user-management.users.index')->middleware('can:users.view');
+        Volt::route('users/create','user-management.users.create')->name('user-management.users.create')->middleware('can:users.create');
+        Volt::route('users/{user}/edit','user-management.users.edit')->name('user-management.users.edit')->middleware('can:users.update');
+        Volt::route('users/{user}/logs','user-management.logs.index')->name('user-management.users.logs.view')->middleware('can:users.logs.view');
     });
 
     Route::prefix('user-management')->group(function () {
