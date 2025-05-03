@@ -9,6 +9,7 @@ class ViewServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        Blade::component('components.flux.table.pagination', 'flux.pagination');
         Blade::component('components.flux.table', 'flux.table');
         Blade::component('components.flux.table.columns', 'flux.table.columns');
         Blade::component('components.flux.table.column', 'flux.table.column');
