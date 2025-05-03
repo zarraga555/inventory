@@ -13,9 +13,11 @@
                         <flux:breadcrumbs.item>{{ __('Edit') }}</flux:breadcrumbs.item>
                     </flux:breadcrumbs>
             </div>
-            <flux:modal.trigger name="confirmingUserDeletion">
-                <flux:button variant="danger">{{__('Delete')}}</flux:button>
-            </flux:modal.trigger>
+            @can('users.delete')
+                <flux:modal.trigger name="confirmingUserDeletion">
+                    <flux:button variant="danger">{{ __('Delete') }}</flux:button>
+                </flux:modal.trigger>
+            @endcan
         </div>
     </div>
     <flux:separator variant="subtitle" />
