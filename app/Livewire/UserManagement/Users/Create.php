@@ -64,8 +64,10 @@ class Create extends Component
                 'create',
                 $user,
                 [
-                    'created_user' => $user->only(['id', 'name', 'email']),
-                    'performed_by' => auth()->user()->only(['id', 'name', 'email']),
+                    'action' => 'create',
+                    'entity' => 'user',
+                    'after' => $user->only(['id', 'name', 'email']),
+                    'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'User was created.'
             );
