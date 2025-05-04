@@ -90,13 +90,11 @@ class Create extends Component
     public function render()
     {
         $this->authorize('create', Role::class);
+
         $permissions = Permission::all();
-    
-        $modules = $permissions->groupBy(function ($permission) {
-            $parts = explode(' ', $permission->name);
-            array_shift($parts);
-            return ucfirst(implode(' ', $parts));
-        });
+
+        // Agrupar directamente por la columna 'module'
+        $modules = $permissions->groupBy('module');
     
         return view('livewire.user-management.roles.create', compact('modules'));
     }
