@@ -51,9 +51,11 @@ class Create extends Component
                 'create',
                 $role,
                 [
-                    'created_role' => $role->only(['id', 'name']),
-                    'permissions_assigned' => $this->selectedPermissions,
-                    'performed_by' => auth()->user()->only(['id', 'name', 'email']),
+                    'action' => 'create',
+                    'entity' => 'role',
+                    'after' => $role->only(['id', 'name']),
+                    'permissions_assigned' => $this->selectedPermissions, // Si estás guardando permisos
+                    'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'Role was created.'
             );
