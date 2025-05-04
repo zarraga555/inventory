@@ -4,7 +4,6 @@ namespace App\Livewire\UserManagement\Logs;
 
 use App\Models\User;
 use Livewire\Component;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 use App\Models\ActivityLog;
