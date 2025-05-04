@@ -2,6 +2,7 @@
 
 namespace App\Livewire\UserManagement\Roles;
 
+use App\Helpers\ToastHelper;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
@@ -31,12 +32,9 @@ class Edit extends Component
     public function render()
     {
         $permissions = Permission::all();
-        $modules = $permissions->groupBy(function ($permission) {
-            $parts = explode(' ', $permission->name);
-            array_shift($parts);
-            return ucfirst(implode(' ', $parts));
-        });
 
+        // Agrupar directamente por la columna 'module'
+        $modules = $permissions->groupBy('module');
         return view('livewire.user-management.roles.edit', compact('modules'));
     }
 
@@ -66,7 +64,7 @@ class Edit extends Component
             $this->role->name = $this->name;
             $this->role->save();
 
-            $this->role->syncPermissions($this->selectedPermissions);
+            $this->role->permissions()->sync($this->selectedPermissions);
 
             logActivity(
                 'update',
@@ -79,7 +77,7 @@ class Edit extends Component
                 'Role was updated.'
             );
 
-            $this->showToastSuccess('Role updated successfully.');
+            ToastHelper::flashSuccess('Role successfully created.', 'Saved');
             return redirect()->route('user-management.roles.index');
         } catch (\Throwable $e) {
             report($e);
