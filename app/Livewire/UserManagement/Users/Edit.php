@@ -100,6 +100,8 @@ class Edit extends Component
             'update',
             $user,
             [
+                'action' => 'update',
+                'entity' => 'user',
                 'before' => collect($original)->only(['name', 'email']),
                 'after' => collect($user->getChanges())->only(['name', 'email']),
                 'performed_by' => Auth::user()->only(['id', 'name', 'email']),
@@ -132,7 +134,9 @@ class Edit extends Component
                 'delete',
                 $user,
                 [
-                    'deleted_user' => $userData,
+                    'action' => 'delete',
+                    'entity' => 'user',
+                    'before' => $userData, // toda la info eliminada
                     'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'User was deleted.'
