@@ -70,8 +70,11 @@ class Edit extends Component
                 'update',
                 $this->role,
                 [
+                    'action' => 'update',
+                    'entity' => 'role',
                     'before' => collect($original)->only(['name']),
-                    'after' => collect($this->role->getChanges())->only(['name']),
+                    'after' => collect($role->getChanges())->only(['name']),
+                    'permissions_assigned' => $this->selectedPermissions, // Si estás guardando permisos
                     'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'Role was updated.'
@@ -104,7 +107,9 @@ class Edit extends Component
                 'delete',
                 $this->role,
                 [
-                    'deleted_role' => $roleData,
+                    'action' => 'delete',
+                    'entity' => 'role',
+                    'before' => $roleData, // Aquí puedes guardar toda la información antes de la eliminación
                     'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'Role was deleted.'
