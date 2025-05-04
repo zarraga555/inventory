@@ -123,4 +123,20 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Company Details
+    |--------------------------------------------------------------------------
+    |
+    */
+    'company' => [
+        'name' => env('COMPANY_NAME', '| ZARRAGA TECH'),
+        'address' => env('COMPANY_ADDRESS', '0260 Segunda Circunvalacion'),
+        'city' => env('COMPANY_CITY', 'Cochabamba'),
+        'state' => env('COMPANY_STATE', 'CBBA'),
+        'zip' => env('COMPANY_ZIP', '0000'),
+        'country' => env('COMPANY_COUNTRY', 'Bolivia'),
+        'phone' => env('COMPANY_PHONE', '555-555-5555'),
+        'email' => env('COMPANY_EMAIL'),
+    ],
 ];
