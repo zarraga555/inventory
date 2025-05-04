@@ -36,6 +36,7 @@ class Create extends Component
 
         DB::beginTransaction();
         try {
+            $permissionNames = Permission::whereIn('id', $this->selectedPermissions)->pluck('name')->toArray();
             // Crear el rol
             $role = Role::create([
                 'name' => $this->name,
@@ -54,8 +55,10 @@ class Create extends Component
                 [
                     'action' => 'create',
                     'entity' => 'role',
-                    'after' => $role->only(['id', 'name']),
-                    'permissions_assigned' => $this->selectedPermissions, // Si estás guardando permisos
+                    'after' => array_merge(
+                        $role->only(['id', 'name']),
+                        ['permissions_assigned' => $permissionNames]
+                    ),
                     'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'Role was created.'
