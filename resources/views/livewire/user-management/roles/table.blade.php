@@ -22,7 +22,7 @@
                     <x-flux.table.cell>
                         @can('roles.update')
                             <a href="{{ route('user-management.roles.edit', $role->id) }}"
-                                class="text-blue-500 hover:underline">{{ __('Edit') }}</a>
+                                class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
                         @endcan
                     </x-flux.table.cell>
                 @endif

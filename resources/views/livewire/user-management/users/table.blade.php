@@ -21,8 +21,8 @@
                 @if (auth()->user()?->can('users.logs.view') || auth()->user()?->can('users.update'))
                     <x-flux.table.cell>
                         @can('users.update')
-                            <a href="{{ route('user-management.users.edit', $user->id) }}"
-                                class="text-blue-500 hover:underline">{{ __('Edit') }}</a>
+                            <a href="{{ route('user-management.users.edit', $user->id) }} "
+                                class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
                         @endcan
 
                         @can('users.logs.view')
@@ -30,7 +30,7 @@
                                 |
                             @endcan
                             <a href="{{ route('user-management.users.logs.view', $user->id) }}"
-                                class="text-primary-500 hover:underline">{{ __('See activity') }}</a>
+                                class="text-primary-500 hover:underline" wire:navigate>{{ __('See activity') }}</a>
                         @endcan
                     </x-flux.table.cell>
                 @endif
