@@ -61,6 +61,14 @@ class Edit extends Component
 
             $original = $this->role->getOriginal();
 
+            $originalPermissions = $this->role->permissions()->pluck('id')->toArray();
+            $newPermissions = $this->selectedPermissions;
+
+            // Convertir a nombres
+            $beforeNames = Permission::whereIn('id', $originalPermissions)->pluck('name')->toArray();
+            $afterNames = Permission::whereIn('id', $newPermissions)->pluck('name')->toArray();
+
+
             $this->role->name = $this->name;
             $this->role->save();
 
@@ -72,15 +80,20 @@ class Edit extends Component
                 [
                     'action' => 'update',
                     'entity' => 'role',
-                    'before' => collect($original)->only(['name']),
-                    'after' => collect($role->getChanges())->only(['name']),
-                    'permissions_assigned' => $this->selectedPermissions, // Si estás guardando permisos
+                    'before' => array_merge(
+                        collect($original)->only(['name'])->toArray(),
+                        ['permissions_assigned' => $beforeNames]
+                    ),
+                    'after' => array_merge(
+                        collect($this->role->getChanges())->only(['name'])->toArray(),
+                        ['permissions_assigned' => $afterNames]
+                    ),
                     'performed_by' => Auth::user()->only(['id', 'name', 'email']),
                 ],
                 'Role was updated.'
             );
 
-            ToastHelper::flashSuccess('Role successfully created.', 'Saved');
+            ToastHelper::flashSuccess('The role has been updated successfully.', 'Success');
             return redirect()->route('user-management.roles.index');
         } catch (\Throwable $e) {
             report($e);
