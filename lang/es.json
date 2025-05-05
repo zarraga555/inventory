@@ -169,5 +169,7 @@
     "The role has been updated successfully." : "El rol se ha actualizado con éxito.",
     "Action performed" : "Acción realizada",
     "Entity" : "Entidad",
-    "Permissions_assigned" : "Permisos asignados"
+    "Permissions_assigned" : "Permisos asignados",
+    "Search for roles..." : "Buscar roles...",
+    "User Management" : "Gestión de usuarios"
 }
