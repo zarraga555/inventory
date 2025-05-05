@@ -27,9 +27,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('user-management')->group(function () {
-        Volt::route('roles','user-management.roles.index')->name('user-management.roles.index');
-        Volt::route('roles/create','user-management.roles.create')->name('user-management.roles.create');
-        Volt::route('roles/{role}/edit','user-management.roles.edit')->name('user-management.roles.edit');
+        Volt::route('roles','user-management.roles.index')->name('user-management.roles.index')->middleware('can:roles.view');
+        Volt::route('roles/create','user-management.roles.create')->name('user-management.roles.create')->middleware('can:roles.create');
+        Volt::route('roles/{role}/edit','user-management.roles.edit')->name('user-management.roles.edit')->middleware('can:roles.update');
     });
 });
 
