@@ -16,21 +16,29 @@ class UserManagementSeeder extends Seeder
      */
     public function run(): void
     {
-        $modules = [
-            'users' => ['view', 'create', 'update', 'delete', 'logs.view'],
-            'roles' => ['view', 'create', 'update', 'delete'],
+        // Estructura: [module => [submodule => [acciones]]]
+        $structure = [
+            'UserManagement' => [
+                'users' => ['view', 'create', 'update', 'delete'],
+                'roles' => ['view', 'create', 'update', 'delete'],
+                'logs'  => ['view'],
+            ],
         ];
 
-        foreach ($modules as $module => $actions) {
-            foreach ($actions as $action) {
-                // Si el permiso tiene punto (ej: logs.view), extrae solo la acción
-                $name = "{$module}.{$action}";
-                $mainModule = explode('.', $name)[0]; // para la columna module
+        foreach ($structure as $module => $submodules) {
+            foreach ($submodules as $submodule => $actions) {
+                foreach ($actions as $action) {
+                    $permissionName = "{$submodule}.{$action}";
 
-                Permission::updateOrCreate(
-                    ['name' => $name],
-                    ['module' => $mainModule]
-                );
+                    Permission::updateOrCreate(
+                        ['name' => $permissionName],
+                        [
+                            'module' => $module,
+                            'submodule' => $submodule,
+                            'guard_name' => 'web',
+                        ]
+                    );
+                }
             }
         }
 
