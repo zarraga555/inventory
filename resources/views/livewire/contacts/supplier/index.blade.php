@@ -8,7 +8,7 @@
                 <flux:heading size="xl" level="1">{{ __('Suppliers') }}</flux::heading>
                     <flux:subheading size="lg">{{ __('Manage your suppliers') }}</flux::subheading>
             </div>
-            @can('users.create')
+            @can('supplier.create')
                 <flux:button href="{{ route('contacts.supplier.create') }}" variant="primary" wire:navigate>
                     {{ __('Create new supplier') }}
                 </flux:button>
