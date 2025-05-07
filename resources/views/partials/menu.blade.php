@@ -53,7 +53,7 @@
                     'label' => 'Import Contacts',
                     'route' => 'contacts.import-contact.index',
                     'icon' => 'arrow-down-on-square-stack',
-                    'permission' => 'import-contact.index',
+                    'permission' => 'import-contact.view',
                 ],
             ],
         ],
