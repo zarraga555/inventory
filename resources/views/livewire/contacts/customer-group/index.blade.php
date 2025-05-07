@@ -8,9 +8,9 @@
                 <flux:heading size="xl" level="1">{{ __('Customer Groups') }}</flux::heading>
                     <flux:subheading size="lg">{{ __('Manage your customer groups') }}</flux::subheading>
             </div>
-            @can('users.create')
+            @can('customer-group.create')
                 <flux:button href="{{ route('contacts.customer-group.create') }}" variant="primary" wire:navigate>
-                    {{ __('Create new supplier') }}
+                    {{ __('Create new customer group') }}
                 </flux:button>
             @endcan
         </div>
