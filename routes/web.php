@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
         Volt::route('customer-group/create', 'contacts.customer-group.create')->name('contacts.customer-group.create')->middleware('can:customer-group.create');
         Volt::route('customer-group/{customerGroup}/edit', 'contacts.customer-group.edit')->name('contacts.customer-group.edit')->middleware('can:customer-group.update');
 
-        Volt::route('import-contacts', 'contacts.import-contact.index')->name('contacts.import-contact.index')->middleware('can:import-contact.index');
+        Volt::route('import-contacts', 'contacts.import-contact.index')->name('contacts.import-contact.index')->middleware('can:import-contact.view');
     });
 });
 
