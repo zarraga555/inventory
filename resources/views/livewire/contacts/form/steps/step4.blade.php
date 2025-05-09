@@ -20,30 +20,30 @@
         <flux:field>
             <flux:label>{{ __('Payment Term (Value)') }}</flux:label>
             <flux:input type="number" wire:model="contact.payment_term_value" placeholder="30" />
-            <flux:error name="contact.payment_term_value" />
+            <flux:error name="contact_payment_term_value" />
         </flux:field>
 
         {{-- Payment Term Type --}}
         <flux:field>
             <flux:label>{{ __('Payment Term Type') }}</flux:label>
-            <flux:select wire:model="contact.customer_group_id">
+            <flux:select wire:model="contact_customer_group_id">
                 <flux:select.option value="">{{ __('Select an option') }}</flux:select.option>
                 <flux:select.option value="days">{{ __('Days') }}</flux:select.option>
                 <flux:select.option value="months">{{ __('Months') }}</flux:select.option>
             </flux:select>
-            <flux:error name="contact.customer_group_id" />
+            <flux:error name="contact_customer_group_id" />
         </flux:field>
 
         {{-- Customer Group --}}
         <flux:field>
             <flux:label>{{ __('Customer Group') }}</flux:label>
-            <flux:select wire:model="contact.customer_group_id">
+            <flux:select wire:model="contact_customer_group_id">
                 <flux:select.option value="">{{ __('Select an option') }}</flux:select.option>
                 @foreach ($customerGroups as $group)
                     <flux:select.option value="{{ $group->id }}">{{ $group->name }}</flux:select.option>
                 @endforeach
             </flux:select>
-            <flux:error name="contact.customer_group_id" />
+            <flux:error name="contact_customer_group_id" />
         </flux:field>
     </div>
 </div>
