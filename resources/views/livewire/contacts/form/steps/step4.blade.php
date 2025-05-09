@@ -26,12 +26,12 @@
         {{-- Payment Term Type --}}
         <flux:field>
             <flux:label>{{ __('Payment Term Type') }}</flux:label>
-            <flux:select wire:model="contact_customer_group_id">
+            <flux:select wire:model="contact_payment_term_type">
                 <flux:select.option value="">{{ __('Select an option') }}</flux:select.option>
                 <flux:select.option value="days">{{ __('Days') }}</flux:select.option>
                 <flux:select.option value="months">{{ __('Months') }}</flux:select.option>
             </flux:select>
-            <flux:error name="contact_customer_group_id" />
+            <flux:error name="contact_payment_term_type" />
         </flux:field>
 
         {{-- Customer Group --}}
