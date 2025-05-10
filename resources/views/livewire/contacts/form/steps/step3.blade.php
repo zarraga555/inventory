@@ -5,14 +5,14 @@
         {{-- Address Line 1 --}}
         <flux:field>
             <flux:label>{{ __('Address Line 1') }}</flux:label>
-            <flux:input type="email" wire:model.defer="contact_address_line_1" placeholder="Calle, número, zona" />
+            <flux:input type="email" wire:model="contact_address_line_1" placeholder="Calle, número, zona" />
             <flux:error name="contact_address_line_1" />
         </flux:field>
 
         {{-- Address Line 2 --}}
         <flux:field>
             <flux:label>{{ __('Address Line 2') }}</flux:label>
-            <flux:input type="email" wire:model.defer="contact_address_line_2" placeholder="Calle, número, zona" />
+            <flux:input type="email" wire:model="contact_address_line_2" placeholder="Calle, número, zona" />
             <flux:error name="contact_address_line_2" />
         </flux:field>
 
