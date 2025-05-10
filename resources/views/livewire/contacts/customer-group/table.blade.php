@@ -14,11 +14,11 @@
         @forelse ($customer_groups as $customer_group)
             <x-flux.table.row>
                 <x-flux.table.cell>{{ $customer_group->name }}</x-flux.table.cell>
-                <x-flux.table.cell>{{ number_format($customer_group->amount, 2) }}</x-flux.table.cell>
-                <x-flux.table.cell>{{ $customer_group->price_calculation_type }}</x-flux.table.cell>
+                <x-flux.table.cell>{{ number_format($customer_group->amount, 2) }}{{ $customer_group->price_calculation_type === 'percentage' ? '%' : '' }}</x-flux.table.cell>
+                <x-flux.table.cell>{{ __($customer_group->price_calculation_type) }}</x-flux.table.cell>
                 <x-flux.table.cell>
                   @can('customer-group.update')
-                  <a href="{{ route('contacts.customer-group.edit', $user->id) }} "
+                  <a href="{{ route('contacts.customer-group.edit', $customer_group->id) }} "
                       class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
               @endcan
                 </x-flux.table.cell>
