@@ -31,7 +31,7 @@
             </div>
             <div class="fi-ac gap-3 flex flex-wrap items-center justify-start mt-8">
                 <flux:button variant="primary" wire:click="importContacts">{{ __('Import Contacts') }}</flux:button>
-                <flux:button wire:click="dowonloadTemplate">{{ __('Download template file') }}</flux:button>
+                <flux:button wire:click="downloadTemplate">{{ __('Download template file') }}</flux:button>
             </div>
             
             {{-- <div class="mt-6">
