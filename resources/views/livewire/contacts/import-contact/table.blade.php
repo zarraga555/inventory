@@ -6,15 +6,15 @@
     </x-flux.table.columns>
 
     <x-flux.table.rows>
-        @forelse ($columnas as $index => [$columna, $tipo, $info])
+        @forelse ($columnas as $index => [$columna, $tipo, $info, $instructions])
             <x-flux.table.row>
                 <x-flux.table.cell>{{ $index + 1 }}</x-flux.table.cell>
-                <x-flux.table.cell>{{ $columna }}
+                <x-flux.table.cell>{{ $columna }} ({{__($tipo)}})
                     @if ($tipo)
-                        <small class="block text-gray-500 dark:text-gray-400">{{ $tipo }}</small>
+                        <small class="block text-gray-500 dark:text-gray-400">{{ __($info) }}</small>
                     @endif
                 </x-flux.table.cell>
-                <x-flux.table.cell>{!! $info ? '<strong>' . $info . '</strong>' : '&nbsp;' !!}</x-flux.table.cell>
+                <x-flux.table.cell>{!! $instructions ? '<strong>' . __($instructions) . '</strong>' : '&nbsp;' !!}</x-flux.table.cell>
             </x-flux.table.row>
         @empty
             <x-flux.table.row>
