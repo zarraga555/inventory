@@ -58,7 +58,7 @@ class Index extends Component
 
     public function render()
     {
-        // $this->authorize('import', Contact::class);
+        $this->authorize('import', Contact::class);
         $fields = [
             // ['type', 'Contact Type', '(Required)', 'Options: 1 = Customer, 2 = Supplier, 3 = Both'],
             // ['DB Field (Excel Header)', 'Translated Header (English)', 'Requirement', 'Instructions'],   
