@@ -44,7 +44,7 @@
             </x-flux.table.row>
         @empty
             <x-flux.table.row>
-                <x-flux.table.cell colspan="7">No se encontraron clientes.</x-flux.table.cell>
+                <x-flux.table.cell colspan="7">{{ __('No customers found') }}</x-flux.table.cell>
             </x-flux.table.row>
         @endforelse
     </x-flux.table.rows>
