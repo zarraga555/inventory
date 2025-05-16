@@ -28,6 +28,35 @@
                 ],
             ],
         ],
+        [
+            'heading' => 'Contacts',
+            'items' => [
+                [
+                    'label' => 'Customers',
+                    'route' => 'contacts.customer.index',
+                    'icon' => 'user-circle',
+                    'permission' => 'customer.view',
+                ],
+                [
+                    'label' => 'Suppliers',
+                    'route' => 'contacts.supplier.index',
+                    'icon' => 'truck',
+                    'permission' => 'supplier.view',
+                ],
+                [
+                    'label' => 'Customer Groups',
+                    'route' => 'contacts.customer-group.index',
+                    'icon' => 'user-group',
+                    'permission' => 'customer-group.view',
+                ],
+                [
+                    'label' => 'Import Contacts',
+                    'route' => 'contacts.import-contact.index',
+                    'icon' => 'arrow-down-on-square-stack',
+                    'permission' => 'import-contact.view',
+                ],
+            ],
+        ],
     ];
 @endphp
 

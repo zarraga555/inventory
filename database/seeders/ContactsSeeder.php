@@ -4,12 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Spatie\Permission\Models\Permission;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Illuminate\Database\Seeder;
 
-class UserManagementSeeder extends Seeder
+class ContactsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,10 +16,11 @@ class UserManagementSeeder extends Seeder
     {
         // Estructura: [module => [submodule => [acciones]]]
         $structure = [
-            'UserManagement' => [
-                'users' => ['view', 'create', 'update', 'delete'],
-                'roles' => ['view', 'create', 'update', 'delete'],
-                'logs'  => ['view'],
+            'Contacts' => [
+                'customer' => ['view', 'create', 'update', 'delete'],
+                'supplier' => ['view', 'create', 'update', 'delete'],
+                'customer-group' => ['view', 'create', 'update', 'delete'],
+                'import-contact' => ['view'],
             ],
         ];
 
@@ -41,20 +40,8 @@ class UserManagementSeeder extends Seeder
                 }
             }
         }
-
-        // Crear roles
-        $superAdmin = Role::updateOrCreate(['name' => 'super-admin']);
-        // Asignar permisos a cada rol
-        $superAdmin->givePermissionTo(Permission::all());
-
-        // Crear usuario
-        $user = User::create([
-            'name' => 'Juan Alberto Zarraga Torrico',
-            'email' => 'zarraga555@hotmail.es',
-            'password' => Hash::make('password'),
-        ]);
-
-        // Asignar rol admin
-        $user->assignRole('super-admin');
+        // buscar rol
+        $superAdmin = Role::where('name', 'super-admin')->first();
+        $superAdmin->syncPermissions(Permission::all());
     }
 }

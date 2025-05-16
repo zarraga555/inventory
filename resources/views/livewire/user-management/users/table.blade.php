@@ -25,7 +25,7 @@
                                 class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
                         @endcan
 
-                        @can('users.logs.view')
+                        @can('logs.view')
                             @can('users.update')
                                 |
                             @endcan
