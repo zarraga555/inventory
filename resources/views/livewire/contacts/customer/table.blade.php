@@ -22,25 +22,22 @@
                 <x-flux.table.cell>{{ $customer->email ?? '-' }}</x-flux.table.cell>
                 <x-flux.table.cell>{{ number_format($customer->opening_balance ?? 0, 2) }}</x-flux.table.cell>
                 <x-flux.table.cell>{{ number_format($customer->credit_limit ?? 0, 2) }}</x-flux.table.cell>
-                <x-flux.table.cell>
-                    @if (auth()->user()?->can('customer.view') || auth()->user()?->can('customer.update'))
-                        <x-flux.table.cell>
-                            @can('customer.update')
-                                <a href="{{ route('contacts.customer.edit', $customer->id) }}"
-                                    class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
-                            @endcan
+                @if (auth()->user()?->can('customer.view') || auth()->user()?->can('customer.update'))
+                    <x-flux.table.cell>
+                        @can('customer.update')
+                            <a href="{{ route('contacts.customer.edit', $customer->id) }}"
+                                class="text-blue-500 hover:underline" wire:navigate>{{ __('Edit') }}</a>
+                        @endcan
 
-                            @can('customer.view')
-                                @can('customer.update')
-                                    |
-                                @endcan
-                                <a href="#"
-                                {{-- {{ route('contacts.customers.show', $customer->id) }} --}}
-                                    class="text-primary-500 hover:underline" wire:navigate>{{ __('View') }}</a>
+                        @can('customer.view')
+                            @can('customer.update')
+                                |
                             @endcan
-                        </x-flux.table.cell>
-                    @endif
-                </x-flux.table.cell>
+                            <a href="#" {{-- {{ route('contacts.customers.show', $customer->id) }} --}} class="text-primary-500 hover:underline"
+                                wire:navigate>{{ __('View') }}</a>
+                        @endcan
+                    </x-flux.table.cell>
+                @endif
             </x-flux.table.row>
         @empty
             <x-flux.table.row>
